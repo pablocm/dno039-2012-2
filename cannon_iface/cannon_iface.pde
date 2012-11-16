@@ -9,11 +9,13 @@ CannonWheel cannonWheel;
 
 void setup()
 {
-  cam = new Camera(new Server(this, 5203));
-  cameraThread = new Thread(cam);
-  cameraThread.start();
+  cannonClient = new Client(this, "127.0.0.1", 9999);
+  Client camClient = new Client(this, "127.0.0.1", 5555);
   
-  //cannonClient = new Client(this, "127.0.0.1", 5204);
+  cam = new Camera(camClient);
+  //cameraThread = new Thread(cam);
+  //cameraThread.start();
+  
   size(1024,576); 
   smooth();
   buttons = new CannonButton[1];
@@ -23,7 +25,9 @@ void setup()
 }
 
 void emit(String output) {
- //cannonClient.write(output); 
+  if(cannonClient != null) {
+    cannonClient.write(output);
+  }
 }
 
 int pixelX(int x) {
@@ -41,12 +45,17 @@ void mouseClicked() {
 }
 
 void draw()
-{ 
+{
+  // obtener imagen webcam
+  Client client = cam.client;
+  if(client != null)
+    cam.readImage(client);
+  
   background(255);
   for(int i = 0 ; i < buttons.length ; i++)
     buttons[i].draw(); 
   cannonWheel.draw();
-  image(cam.getImage(), width/2 - pixelX(160), height/2 - pixelY(120));
+  image(cam.getImage(), width/2 - pixelX(160), height/2 - pixelY(120), 320, 240);
 }
 
 void mousePressed() {

@@ -1,41 +1,48 @@
 class Camera implements Runnable {
-  Server server;
+  Client client;
   PImage img;
   PImage buffer;
   
-  Camera(Server server) {
-    buffer = createImage(320, 240, ARGB); 
-    buffer.loadPixels(); 
-    img = createImage(320, 240, ARGB);  
-    this.server = server;
-  }  
+  Camera(Client client) {
+    buffer = createImage(160, 120, RGB); 
+    //buffer.loadPixels(); 
+    img = createImage(160, 120, RGB);  
+    this.client = client;
+  }
 
   void run() {
     while(true)
     {
-      Client client = server.available();
       if(client != null)
-      readImage(client);
+        readImage(client);
     }
   }
   
+  // dejemos esto afuera para no maltratar al garbage collector
+  byte[] data = new byte[160*120*3];
+  
   void readImage(Client thisClient) {
-    byte[] data = new byte[320*240*4];
-
-    if(thisClient.available() < 320*240*4) 
+    if(thisClient.available() < 160*120*3)
       return;
     
     thisClient.readBytes(data);
-    for(int in = 0; in < data.length; in+= 4) {
-      buffer.pixels[in/4] = color(data[in] & 0xff, data[in+1] & 0xff, data[in+2] & 0xff, data[in+3] & 0xff);
+    for(int in = 0; in < data.length; in+= 3) {
+      buffer.pixels[in/3] = color(data[in] & 0xff, data[in+1] & 0xff, data[in+2] & 0xff /*,data[in+3] & 0xff*/);
     }
-    buffer.updatePixels();  
-    swapImages();
     
+    buffer.updatePixels();  
+    //swapImages();
+    
+    // si queda mucho por leer, descartemos data
+    while(thisClient.available() >= 160*120*3) {
+      thisClient.readBytes(data);
+      println("Descartando frame!");
+    }
   }
   
   synchronized PImage getImage() {
-    return img;   
+    //return img;   
+    return buffer;
   }
   
   synchronized void swapImages() {
