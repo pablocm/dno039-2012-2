@@ -46,7 +46,7 @@ void draw()
   for(int i = 0 ; i < buttons.length ; i++)
     buttons[i].draw(); 
   cannonWheel.draw();
-  //image(cam.getImage(), width/2 - pixelX(160), height/2 - pixelY(120));
+  image(cam.getImage(), width/2 - pixelX(160), height/2 - pixelY(120));
 }
 
 void mousePressed() {

@@ -5,7 +5,7 @@ class Camera implements Runnable {
   
   Camera(Server server) {
     buffer = createImage(320, 240, ARGB); 
-    //buffer.loadPixels(); 
+    buffer.loadPixels(); 
     img = createImage(320, 240, ARGB);  
     this.server = server;
   }  
@@ -26,10 +26,10 @@ class Camera implements Runnable {
       return;
     
     thisClient.readBytes(data);
-    //for(int in = 0; in < data.length; in+= 4) {
-    //  buffer.pixels[in/4] = color(data[in] & 0xff, data[in+1] & 0xff, data[in+2] & 0xff, data[in+3] & 0xff);
-    //}
-    //buffer.updatePixels();  
+    for(int in = 0; in < data.length; in+= 4) {
+      buffer.pixels[in/4] = color(data[in] & 0xff, data[in+1] & 0xff, data[in+2] & 0xff, data[in+3] & 0xff);
+    }
+    buffer.updatePixels();  
     swapImages();
     
   }
