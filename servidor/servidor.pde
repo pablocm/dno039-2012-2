@@ -31,7 +31,7 @@ void draw() {
     readString(thisClient);
   }
   
-  //image(cam, 0, 0, 320, 240);
+  //image(img, 0, 0, 320, 240);
   //emit(img.pixels);
   
   if (cam.available() == true) {
@@ -44,7 +44,7 @@ void draw() {
 void readString(Client thisClient) {
   String whatClientSaid = thisClient.readString();
     if (whatClientSaid != null) {
-      println(thisClient.ip() + " says: " + whatClientSaid);
+      println(whatClientSaid);
       //background((int)random(255));
     }
 }

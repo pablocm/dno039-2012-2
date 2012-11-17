@@ -5,11 +5,15 @@ class CannonWheel {
  color wheelColor, handleColor;
  boolean pressed;
  
+ PImage wheelImg;
+ 
  CannonWheel(int x, int y) {
    this.x = x;
    this.y = y;
    this.wheelRadius = 100;
    this.handleAngle = 0;
+   
+   wheelImg = loadImage("timon.jpg");
  }
  
  void mousePressed() {
@@ -53,9 +57,20 @@ class CannonWheel {
    
    stroke(wheelColor);
    noFill();
+   
+   // dibujar sprite del timon
+   pushMatrix();
+   translate(pixelX(x), pixelY(y));
+   rotate(handleAngle);
+   image(wheelImg, 
+         - pixelX(wheelRadius),
+         - pixelY(wheelRadius),
+         pixelX(wheelRadius*2), pixelY(wheelRadius*2));
+   popMatrix();
+   
+   // dibujar elipses de referencia (debug)
    ellipse(pixelX(x),pixelY(y),pixelX(wheelRadius*2), pixelY(wheelRadius*2));  
    ellipse(pixelX(handleX()), pixelY(handleY()), 30,30);
-   
    
  }
 }

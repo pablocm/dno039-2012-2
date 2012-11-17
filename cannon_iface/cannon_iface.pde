@@ -1,6 +1,6 @@
 import processing.net.*;
 
-Thread cameraThread;
+//Thread cameraThread;
 Client cannonClient;
 Camera cam;
 

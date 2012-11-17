@@ -1,4 +1,4 @@
-class Camera implements Runnable {
+class Camera /*implements Runnable*/ {
   Client client;
   PImage img;
   PImage buffer;
@@ -10,6 +10,7 @@ class Camera implements Runnable {
     this.client = client;
   }
 
+  /*
   void run() {
     while(true)
     {
@@ -17,6 +18,7 @@ class Camera implements Runnable {
         readImage(client);
     }
   }
+  */
   
   // dejemos esto afuera para no maltratar al garbage collector
   byte[] data = new byte[160*120*3];
@@ -45,9 +47,11 @@ class Camera implements Runnable {
     return buffer;
   }
   
+  /*
   synchronized void swapImages() {
     PImage tmp = img;
     img = buffer;
     buffer = tmp;    
   }
+  */
 }
