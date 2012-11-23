@@ -5,6 +5,7 @@ Server keyServer;
 Server camServer;
 GSCapture cam;
 PImage img;
+byte interesting = 10;
 
 void setup() {
   size(320, 240);
@@ -42,9 +43,15 @@ void draw() {
 }
 
 void readString(Client thisClient) {
-  String whatClientSaid = thisClient.readString();
+  String whatClientSaid = thisClient.readStringUntil(interesting);
     if (whatClientSaid != null) {
-      println(whatClientSaid);
+      thisClient.clear();
+      if(whatClientSaid.equals("-1\n"))
+        println("UP");
+      if(whatClientSaid.equals("1\n"))
+        println("DOWN");
+        
+
       //background((int)random(255));
     }
 }
