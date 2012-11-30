@@ -12,14 +12,15 @@ PImage crosshairImg;
 PImage bulletImg;
 PImage dogsImg;
 
+String cannon_ip = "146.155.107.21";
+//String cannon_ip = "192.168.1.100";
+
 void setup()
 {
-  cannonClient = new Client(this, "127.0.0.1", 9999);
-  Client camClient = new Client(this, "127.0.0.1", 5555);
+  cannonClient = new Client(this, cannon_ip, 9999);
+  Client camClient = new Client(this, cannon_ip, 5555);
   
   cam = new Camera(camClient);
-  //cameraThread = new Thread(cam);
-  //cameraThread.start();
   
   size(1024,576); 
   smooth();
@@ -38,7 +39,7 @@ void setup()
 
 void emit(String output) {
   // Si se dispara, reiniciar progressBar
-  if ("0".equals(output) && progressBar.getPercentage() == 1)
+  if ("0\n".equals(output) && progressBar.getPercentage() == 1)
   {
     progressBar.setValue(0);
     if(cannonClient != null) {
@@ -102,4 +103,12 @@ void mousePressed() {
 
 void mouseReleased() {
    cannonWheel.mouseReleased(); 
+}
+
+void clientEvent(Client client) {
+    if(client ==  cannonClient) {
+      String msg = client.readString();
+      if(msg != null)
+        println("Client dijo " + msg);
+    }
 }

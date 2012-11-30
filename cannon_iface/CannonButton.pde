@@ -49,6 +49,6 @@ class CannonButton {
   
   public void press() {
     pressed = 5;
-    emit(""+output);
+    emit(output+"\n");
   }
 }
