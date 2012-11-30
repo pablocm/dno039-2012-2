@@ -1,6 +1,8 @@
 import codeanticode.gsvideo.*;
 import processing.net.*;
+import processing.serial.*;
 
+Serial comm;
 Server keyServer;
 Server camServer;
 GSCapture cam;
@@ -20,9 +22,15 @@ void setup() {
   cam = new GSCapture(this, 160, 120, 10);
   cam.start();
   println("Webcam started");
+  
+  if (Serial.list().length > 0) {
+    comm = new Serial(this, Serial.list()[0], 9600);
+    println("Serial connection started");
+  }
+  else
+    println("ADVERTENCIA: No hay dispositivo serial!"); 
 }
 
-int i = 0;
 void draw() {
   
   // Get the next available client
@@ -47,12 +55,25 @@ void readString(Client thisClient) {
     if (whatClientSaid != null) {
       thisClient.clear();
       
-      if(whatClientSaid.equals("-1\n"))
+      if(whatClientSaid.equals("-1\n")) {
         println("UP");
-      else if(whatClientSaid.equals("1\n"))
+        if (comm != null) {
+          comm.write(49);
+          comm.write(50);
+        }
+        thisClient.clear();
+      }
+      else if(whatClientSaid.equals("1\n")) {
         println("DOWN");
-      else if(whatClientSaid.equals("0\n"))
+        if (comm != null) {
+          comm.write(51);
+          comm.write(50);
+        }
+        thisClient.clear();
+      }
+      else if(whatClientSaid.equals("0\n")) {
         println("BOOM!");
+      }
       
       //background((int)random(255));
     }

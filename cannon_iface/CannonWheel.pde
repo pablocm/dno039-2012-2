@@ -6,6 +6,7 @@ class CannonWheel {
  color wheelColor, handleColor;
  boolean pressed;
  PImage wheelImg;
+ int delays = 0;
  
  CannonWheel(int x, int y) {
    this.x = x;
@@ -45,16 +46,20 @@ class CannonWheel {
      float diff = (newHandleAngle-handleAngle);
      if(diff < 3 && diff > -3)
      {
-        for(int i = 0 ; i < abs(diff)*1000 ; i++)
+        //for(int i = 0 ; i < abs(diff)*1000 ; i++)
+        if (delays <= 0)
         {
          if(diff > 0)
           emit("1\n");
          else if(diff < 0)
           emit("-1\n"); 
         }
+        
+        delays = 50;
      }
      handleAngle = newHandleAngle;
    }
+   delays--;
    
    stroke(wheelColor);
    noFill();
