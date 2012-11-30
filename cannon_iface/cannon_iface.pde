@@ -6,11 +6,11 @@ Camera cam;
 
 CannonButton[] buttons;
 CannonWheel cannonWheel;
+ProgressBar progressBar;
 PImage backgroundImg;
 PImage crosshairImg;
 PImage bulletImg;
 PImage dogsImg;
-
 
 void setup()
 {
@@ -27,6 +27,8 @@ void setup()
   color default_color = color(50,0,50);
   buttons[0] = new CannonButton(width/6, height*55/100, 80, color(0,100,0), 0);
   cannonWheel = new CannonWheel(width*82/100, height*55/100);
+  progressBar = new ProgressBar(pixelX(100), pixelY(90), pixelX(170), pixelY(15));
+  progressBar.setValue(100);
   
   backgroundImg = loadImage("data/base.png");
   crosshairImg = loadImage("data/crosshair.png");
@@ -35,8 +37,19 @@ void setup()
 }
 
 void emit(String output) {
-  if(cannonClient != null) {
-    cannonClient.write(output);
+  // Si se dispara, reiniciar progressBar
+  if ("0".equals(output) && progressBar.getPercentage() == 1)
+  {
+    progressBar.setValue(0);
+    if(cannonClient != null) {
+      cannonClient.write(output);
+    }
+  }
+  // otros inputs enviarlos siempre
+  else {
+    if(cannonClient != null) {
+      cannonClient.write(output);
+    }
   }
 }
 
@@ -73,7 +86,13 @@ void draw()
         320, 400);
 
   //temporal:
-  image(bulletImg, pixelX(160), pixelY(50), pixelX(33), pixelY(96));
+  if (progressBar.getPercentage() < 1) {
+    progressBar.draw();
+    progressBar.addValue(1);
+  }
+  else {
+    image(bulletImg, pixelX(160), pixelY(50), pixelX(33), pixelY(96));
+  }
   //image(dogsImg, width/2 - pixelX(256), height*90/100, pixelX(512), pixelY(27));
 }
 
