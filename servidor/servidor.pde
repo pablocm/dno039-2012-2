@@ -46,12 +46,14 @@ void readString(Client thisClient) {
   String whatClientSaid = thisClient.readStringUntil(interesting);
     if (whatClientSaid != null) {
       thisClient.clear();
+      
       if(whatClientSaid.equals("-1\n"))
         println("UP");
-      if(whatClientSaid.equals("1\n"))
+      else if(whatClientSaid.equals("1\n"))
         println("DOWN");
-        
-
+      else if(whatClientSaid.equals("0\n"))
+        println("BOOM!");
+      
       //background((int)random(255));
     }
 }
@@ -86,3 +88,9 @@ void disconnectEvent(Client c) {
   println("Disconnected!");
 }
 
+void mouseClicked() {
+  if (keyServer != null) {
+    keyServer.write("X");
+    println("X");
+  }
+}
