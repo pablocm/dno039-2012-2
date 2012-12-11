@@ -134,6 +134,6 @@ void disconnectEvent(Client c) {
 void mouseClicked() {
   if (keyServer != null) {
     keyServer.write("x\n");
-    println("x\n");
+    println("x");
   }
 }

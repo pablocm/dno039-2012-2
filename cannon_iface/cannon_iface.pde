@@ -25,11 +25,13 @@ void setup()
   cam = new Camera(camClient);
   
   size(1024,576); 
+  //size(512,288);
+  //size(896,504);  
   smooth();
   buttons = new CannonButton[1];
   color default_color = color(50,0,50);
-  buttons[0] = new CannonButton(width/6, height*55/100, 80, color(0,100,0), 0);
-  cannonWheel = new CannonWheel(width*82/100, height*55/100);
+  buttons[0] = new CannonButton(width/6, height*55/100, pixelX(80), color(0,100,0), 0);
+  cannonWheel = new CannonWheel(pixelX(840), pixelY(317));
   progressBar = new ProgressBar(pixelX(100), pixelY(90), pixelX(170), pixelY(15));
   progressBar.setValue(100);
   score = new ScoreBar(width/2 - pixelX(256), height*90/100);
@@ -58,11 +60,11 @@ void emit(String output) {
 }
 
 int pixelX(int x) {
- return x*1024/width; 
+ return x*width/1024; 
 }
 
 int pixelY(int y) {
- return y*576/height; 
+ return y*height/576; 
 }
 
 void mouseClicked() {
@@ -84,10 +86,12 @@ void draw()
   for(int i = 0 ; i < buttons.length ; i++)
     buttons[i].draw(); 
   cannonWheel.draw();
+  //webcam
   image(cam.getImage(), width/2 - pixelX(160), height/2 - pixelY(120 +25),
-        320, 240);
+        pixelX(320), pixelY(240));
+  //target
   image(crosshairImg, width/2 - pixelX(160), height/2 - pixelY(200 +25), 
-        320, 400);
+        pixelX(320), pixelY(400));
 
   //progreso carga bala
   if (progressBar.getPercentage() < 1) {

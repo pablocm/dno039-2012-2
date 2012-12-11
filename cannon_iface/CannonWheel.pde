@@ -62,7 +62,7 @@ class CannonWheel {
    
    // dibujar sprite del timon
    pushMatrix();
-   translate(pixelX(x), pixelY(y));
+   translate(x, y);
    rotate(handleAngle + PI/4);  //desfasado para acomodar img
    image(wheelImg, 
          - pixelX(wheelRadius),
