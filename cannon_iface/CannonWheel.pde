@@ -1,18 +1,18 @@
 class CannonWheel {
  int x, y;
  float handleAngle;
+ float previousHandleAngle;
  int wheelRadius, wheelWeight, handleLength;
  int handleRadius;
  color wheelColor, handleColor;
  boolean pressed;
  PImage wheelImg;
- int delays = 0;
  
  CannonWheel(int x, int y) {
    this.x = x;
    this.y = y;
    this.wheelRadius = 100;
-   this.handleAngle = 0;
+   this.handleAngle = this.previousHandleAngle = 0;
    this.handleRadius = 50;
    
    wheelImg = loadImage("data/rueda.png");
@@ -42,24 +42,20 @@ class CannonWheel {
  void draw()
  {
    if(pressed) {
-     float newHandleAngle = atan2((mouseY-y),(mouseX-x));
-     float diff = (newHandleAngle-handleAngle);
-     if(diff < 3 && diff > -3)
+     this.handleAngle = atan2((mouseY-y),(mouseX-x));
+     float diff = (this.handleAngle - this.previousHandleAngle);
+     
+     // enviar inputs al girar > 45° la rueda
+     if(diff < -PI/4 || diff > PI/4)
      {
-        //for(int i = 0 ; i < abs(diff)*1000 ; i++)
-        if (delays <= 0)
-        {
-         if(diff > 0)
-          emit("1\n");
-         else if(diff < 0)
-          emit("-1\n"); 
-        }
-        
-        delays = 50;
+       this.previousHandleAngle = this.handleAngle;
+       
+       if(diff > 0)
+        emit("1\n");
+       else if(diff < 0)
+        emit("-1\n");
      }
-     handleAngle = newHandleAngle;
    }
-   delays--;
    
    stroke(wheelColor);
    noFill();

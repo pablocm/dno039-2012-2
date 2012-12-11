@@ -7,12 +7,14 @@ Camera cam;
 CannonButton[] buttons;
 CannonWheel cannonWheel;
 ProgressBar progressBar;
+ScoreBar score;
 PImage backgroundImg;
 PImage crosshairImg;
 PImage bulletImg;
-PImage dogsImg;
+PImage gameOverImg;
+boolean gameOver = false;
 
-String cannon_ip = "146.155.107.21";
+String cannon_ip = "127.0.0.1";
 //String cannon_ip = "192.168.1.100";
 
 void setup()
@@ -30,11 +32,12 @@ void setup()
   cannonWheel = new CannonWheel(width*82/100, height*55/100);
   progressBar = new ProgressBar(pixelX(100), pixelY(90), pixelX(170), pixelY(15));
   progressBar.setValue(100);
+  score = new ScoreBar(width/2 - pixelX(256), height*90/100);
   
   backgroundImg = loadImage("data/base.png");
   crosshairImg = loadImage("data/crosshair.png");
   bulletImg = loadImage("data/bullet.png");
-  dogsImg = loadImage("data/perros.png");
+  gameOverImg = loadImage("data/smiley.png");
 }
 
 void emit(String output) {
@@ -86,7 +89,7 @@ void draw()
   image(crosshairImg, width/2 - pixelX(160), height/2 - pixelY(200 +25), 
         320, 400);
 
-  //temporal:
+  //progreso carga bala
   if (progressBar.getPercentage() < 1) {
     progressBar.draw();
     progressBar.addValue(1);
@@ -94,7 +97,14 @@ void draw()
   else {
     image(bulletImg, pixelX(160), pixelY(50), pixelX(33), pixelY(96));
   }
-  //image(dogsImg, width/2 - pixelX(256), height*90/100, pixelX(512), pixelY(27));
+  
+  // perros muertos
+  score.draw();
+  
+  //game over?
+  if (gameOver)
+    image(gameOverImg, width/2 - pixelX(250), height/2 - pixelY(250), 
+      pixelX(500), pixelY(500));
 }
 
 void mousePressed() {
@@ -105,10 +115,16 @@ void mouseReleased() {
    cannonWheel.mouseReleased(); 
 }
 
+// mensajes del server
 void clientEvent(Client client) {
     if(client ==  cannonClient) {
       String msg = client.readString();
-      if(msg != null)
-        println("Client dijo " + msg);
+      
+      // murio un perro
+      if ("x\n".equals(msg))
+        score.addValue(1);
+      // game over
+      else if ("g\n".equals(msg))
+        gameOver = true;
     }
 }

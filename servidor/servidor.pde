@@ -4,6 +4,7 @@ import processing.serial.*;
 
 Serial comm;
 Server keyServer;
+Server gameServer;
 Server camServer;
 GSCapture cam;
 PImage img;
@@ -15,6 +16,7 @@ void setup() {
   //img.loadPixels();
   
   camServer = new Server(this, 5555);
+  gameServer = new Server(this, 7777);
   keyServer = new Server(this, 9999);
   println("Server started");
   
@@ -33,16 +35,22 @@ void setup() {
 
 void draw() {
   
-  // Get the next available client
-  Client thisClient = keyServer.available();
-  // If the client is not null, and says something, display what it said
-  if (thisClient !=null) {
-    readString(thisClient);
+  // Get the next available client (input/output)
+  Client keyClient = keyServer.available();
+  if (keyClient !=null) {
+    readKeyClient(keyClient);
+  }
+  
+  // Game status
+  Client gameClient = gameServer.available();
+  if (gameClient != null) {
+    readGameClient(gameClient);
   }
   
   //image(img, 0, 0, 320, 240);
   //emit(img.pixels);
   
+  // webcam img
   if (cam.available() == true) {
     cam.read();
     image(cam, 0, 0, 320, 240);
@@ -50,7 +58,7 @@ void draw() {
   }
 }
 
-void readString(Client thisClient) {
+void readKeyClient(Client thisClient) {
   String whatClientSaid = thisClient.readStringUntil(interesting);
     if (whatClientSaid != null) {
       thisClient.clear();
@@ -76,6 +84,20 @@ void readString(Client thisClient) {
       }
       
       //background((int)random(255));
+    }
+}
+
+void readGameClient(Client thisClient) {
+  String whatClientSaid = thisClient.readStringUntil(interesting);
+    if (whatClientSaid != null) {
+      if(whatClientSaid.equals("x\n")) {
+        println("*Dog dead*");
+        keyServer.write("x\n");
+      }
+      else if(whatClientSaid.equals("g\n")) {
+        println("*Game Over*");
+        keyServer.write("g\n");
+      }
     }
 }
 
@@ -111,7 +133,7 @@ void disconnectEvent(Client c) {
 
 void mouseClicked() {
   if (keyServer != null) {
-    keyServer.write("X");
-    println("X");
+    keyServer.write("x\n");
+    println("x\n");
   }
 }
